@@ -3,13 +3,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:FinalProject.ML._MainApp"
         xmlns:local="clr-namespace:FinalProject.ML._MainApp"
         mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+        Background="{DynamicResource MaterialDesignLightBackground}"
         WindowStartupLocation="CenterScreen"
-        Title="FinalProject.ML"
+        Title="AI4E - Final Project"
         Height="450"
         Width="800">
-    <Grid>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:BundledTheme BaseTheme="Light"
+                                             PrimaryColor="Indigo"
+                                             SecondaryColor="Indigo" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+    
+    
+    <Grid Margin="4">
 
     </Grid>
 </Window>
