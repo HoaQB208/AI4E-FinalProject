@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 
 namespace FinalProject.ML.Models
 {
@@ -50,6 +51,11 @@ namespace FinalProject.ML.Models
             }
             files.Reverse();
             return files;
+        }
+
+        public static void ShowFolder(string folder)
+        {
+            if (Directory.Exists(folder)) Process.Start(new ProcessStartInfo(folder) { UseShellExecute = true });
         }
     }
 }
