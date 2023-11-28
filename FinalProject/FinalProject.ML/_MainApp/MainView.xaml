@@ -238,7 +238,7 @@
                                Text="Export" />
                 </StackPanel>
             </TabItem.Header>
-            
+
             <Grid Margin="4 4 8 4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120" />
@@ -280,7 +280,7 @@
                             Command="{Binding BtnRefreshDataFiles}" />
                 </Grid>
 
-                
+
 
 
                 <!--Export To Folder-->
@@ -372,8 +372,128 @@
                                Text="Training" />
                 </StackPanel>
             </TabItem.Header>
-            <Grid Margin="4">
 
+            <Grid Margin="4 4 8 4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+                <!--DataSet-->
+                <Label Content="DataSet File"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center"
+                       Grid.Row="0" />
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Text="{Binding DataSetPath, UpdateSourceTrigger=PropertyChanged}"
+                             Padding="0"
+                             HorizontalAlignment="Stretch"
+                             Height="15" />
+
+                    <Button Grid.Column="1"
+                            Padding="0"
+                            Width="32"
+                            Height="24"
+                            Margin="4 0 4 0"
+                            Content="{materialDesign:PackIcon Kind=FileOutline}"
+                            Foreground="Black"
+                            BorderThickness="0.1"
+                            Background="WhiteSmoke"
+                            ToolTip="Select DataSet File"
+                            Command="{Binding BtnSelectDataSetFile}" />
+                </Grid>
+
+
+                <!--Algorithm-->
+                <Label Content="Algorithm"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center"
+                       Grid.Row="1" />
+                <ComboBox  Grid.Column="1"
+                           Grid.Row="1"
+                           ItemsSource="{Binding Algorithms, UpdateSourceTrigger=PropertyChanged}"
+                           SelectedItem="{Binding SelectedAlgorithm, UpdateSourceTrigger=PropertyChanged}"
+                           Padding="0"
+                           HorizontalAlignment="Left"
+                           Width="150"
+                           Height="15" />
+
+                <!--Type-->
+                <Label Content="Model Type"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center"
+                       Grid.Row="2" />
+                <ComboBox  Grid.Column="1"
+                           Grid.Row="2"
+                           ItemsSource="{Binding ModelTypes, UpdateSourceTrigger=PropertyChanged}"
+                           SelectedItem="{Binding SelectedModelType, UpdateSourceTrigger=PropertyChanged}"
+                           Padding="0"
+                           HorizontalAlignment="Left"
+                           Width="150"
+                           Height="15" />
+
+                <!--MaxTime-->
+                <Label Content="Max Time"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center"
+                       Grid.Row="3" />
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="3"
+                            Grid.Column="1">
+                    <TextBox Text="{Binding MaxTime, UpdateSourceTrigger=PropertyChanged}"
+                             Padding="0"
+                             Width="150"
+                             HorizontalAlignment="Left"
+                             Height="15" />
+                    <Label Content="(Second)"
+                           HorizontalAlignment="Right"
+                           Margin="8 0 8 0"
+                           VerticalContentAlignment="Center"/>
+                </StackPanel>
+
+
+                <!--Training-->
+                <Button Grid.Row="4"
+                        Grid.ColumnSpan="10"
+                        Margin="8"
+                        Command="{Binding BtnTraining}"
+                        Style="{StaticResource MaterialDesignFloatingActionButton}"
+                        Background="#EE9322"
+                        Foreground="Yellow"
+                        BorderBrush="#EE9322"
+                        materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsRunTraining}"
+                        materialDesign:ButtonProgressAssist.Value="-1"
+                        materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                        Content="{materialDesign:PackIcon Kind=Strategy}" />
+
+
+                <!--Status-->
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="5"
+                            Grid.ColumnSpan="10"
+                            Margin="2">
+                    <TextBlock Text="Status: " />
+                    <TextBlock Text="{Binding TrainingStatus, UpdateSourceTrigger=PropertyChanged}"
+                               FontWeight="Bold" />
+                </StackPanel>
             </Grid>
         </TabItem>
     </TabControl>

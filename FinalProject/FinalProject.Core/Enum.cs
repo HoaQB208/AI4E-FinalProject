@@ -28,3 +28,16 @@ public enum Interval
     W1 = 604800,
     M1 = 2592000
 }
+
+
+public enum AIAlgorithm
+{
+    RandomForest,
+    Auto,
+}
+
+
+public enum ModelType
+{
+    Regression,
+}

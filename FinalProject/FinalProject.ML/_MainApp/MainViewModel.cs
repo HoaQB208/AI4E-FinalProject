@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using FinalProject.ML.Models;
+using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
@@ -33,6 +35,11 @@ namespace FinalProject.ML._MainApp
             BtnSelectDataSetFolder = new RelayCommand(BtnSelectDataSetFolder_Click);
             BtntOpenDataSetFolder = new RelayCommand(() => FileUtils.ShowFolder(DataSetFolder));
             BtnExport = new RelayCommand(() => ExportData.Execute(this));
+
+            // TrainingModel
+            _TrainingStatus = "Ready";
+            BtnSelectDataSetFile = new RelayCommand(SelectDataSetFile);
+            BtnTraining = new RelayCommand(async () => await TrainingModel.Execute(this));
         }
 
 
@@ -181,8 +188,71 @@ namespace FinalProject.ML._MainApp
 
 
         #region TrainingModel
+        public ICommand BtnSelectDataSetFile { get; }
+        public ICommand BtnTraining { get; }
+        private void SelectDataSetFile()
+        {
+            OpenFileDialog dialog = new()
+            {
+                CheckFileExists = true,
+                RestoreDirectory = true,
+                InitialDirectory = DataSetFolder,
+            };
+            bool? rs = dialog.ShowDialog();
+            if (rs.HasValue) if (rs.Value) DataSetPath = dialog.FileName;
+        }
+
+        private string _DataSetPath = "";
+        public string DataSetPath
+        {
+            get { return _DataSetPath; }
+            set
+            {
+                _DataSetPath = value;
+                OnPropertyChanged(nameof(DataSetPath));
+            }
+        }
 
 
+        public ObservableCollection<AIAlgorithm> Algorithms { get; } = new ObservableCollection<AIAlgorithm>(Enum.GetValues(typeof(AIAlgorithm)).Cast<AIAlgorithm>());
+        public AIAlgorithm SelectedAlgorithm { get; set; } = AIAlgorithm.RandomForest;
+
+        public ObservableCollection<ModelType> ModelTypes { get; } = new ObservableCollection<ModelType>(Enum.GetValues(typeof(ModelType)).Cast<ModelType>());
+        public ModelType SelectedModelType { get; set; } = ModelType.Regression;
+
+        private uint _MaxTime = 600;
+        public uint MaxTime
+        {
+            get { return _MaxTime; }
+            set
+            {
+                _MaxTime = value;
+                OnPropertyChanged(nameof(MaxTime));
+            }
+        }
+
+
+        private bool _IsRunTraining = false;
+        public bool IsRunTraining
+        {
+            get { return _IsRunTraining; }
+            set
+            {
+                _IsRunTraining = value;
+                OnPropertyChanged(nameof(IsRunTraining));
+            }
+        }
+
+        private string _TrainingStatus;
+        public string TrainingStatus
+        {
+            get { return _TrainingStatus; }
+            set
+            {
+                _TrainingStatus = value;
+                OnPropertyChanged(nameof(TrainingStatus));
+            }
+        }
         #endregion
 
 
