@@ -1,4 +1,16 @@
-﻿public enum Interval
+﻿public enum Exchange
+{
+    Binance = 0,
+}
+
+public enum MarketType
+{
+    Spot = 0,
+    Futures = 1
+}
+
+
+public enum Interval
 {
     m1 = 60,
     m3 = 180,

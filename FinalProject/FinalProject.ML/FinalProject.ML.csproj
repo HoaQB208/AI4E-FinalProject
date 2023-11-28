@@ -10,18 +10,32 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Lemon_32x32.ico" />
+    <Compile Remove="DownloadKlines\**" />
+    <Compile Remove="ExportData\**" />
+    <Compile Remove="TrainingModel\**" />
+    <EmbeddedResource Remove="DownloadKlines\**" />
+    <EmbeddedResource Remove="ExportData\**" />
+    <EmbeddedResource Remove="TrainingModel\**" />
+    <None Remove="DownloadKlines\**" />
+    <None Remove="ExportData\**" />
+    <None Remove="TrainingModel\**" />
+    <Page Remove="DownloadKlines\**" />
+    <Page Remove="ExportData\**" />
+    <Page Remove="TrainingModel\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DownloadKlines\" />
-    <Folder Include="ExportData\" />
-    <Folder Include="TrainingModel\" />
+    <Content Include="Lemon_32x32.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FinalProject.Core\FinalProject.Core.csproj" />
   </ItemGroup>
 
 </Project>

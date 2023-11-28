@@ -10,7 +10,7 @@
         BorderBrush="{DynamicResource PrimaryHueMidBrush}"
         Background="{DynamicResource MaterialDesignLightBackground}"
         WindowStartupLocation="CenterScreen"
-        Title="AI4E - Final Project"
+        Title="AI4E - Final Project - Thai Hoa Pham"
         Height="450"
         Width="800">
 
@@ -28,9 +28,248 @@
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
-    
-    
-    <Grid Margin="4">
 
-    </Grid>
+
+    <TabControl Margin="4"
+                materialDesign:ColorZoneAssist.Mode="PrimaryDark"
+                Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                TabStripPlacement="Left">
+
+        <!--DownloadKlines-->
+        <TabItem Width="80"
+                 Height="80">
+            <TabItem.Header>
+                <StackPanel Width="auto"
+                            Height="auto"
+                            Margin="0 0 0 10">
+                    <materialDesign:PackIcon Width="32"
+                                             Height="32"
+                                             HorizontalAlignment="Center"
+                                             Kind="Download" />
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="12"
+                               FontWeight="Normal"
+                               Text="Klines" />
+                </StackPanel>
+            </TabItem.Header>
+            <Grid Margin="4 4 8 4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!--Save To Folder-->
+                <Label Content="Save To Folder"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center" />
+                <Grid  Grid.Column="1"
+                       Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Text="{Binding DataFolder, UpdateSourceTrigger=PropertyChanged}"
+                             VerticalContentAlignment="Center"
+                             Height="24"
+                             Padding="0" />
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Column="1"
+                                Margin="4">
+                        <Button Height="24"
+                                Width="48"
+                                Padding="0"
+                                Margin="4 0 0 0"
+                                Content="..."
+                                Foreground="Black"
+                                BorderThickness="0.1"
+                                Background="WhiteSmoke"
+                                ToolTip="Select Folder"
+                                Command="{Binding BtnSelectDataFolder}" />
+                        <Button Width="48"
+                                Padding="0"
+                                Height="24"
+                                Margin="4 0 0 0"
+                                Content="{materialDesign:PackIcon Kind=FolderOpenOutline}"
+                                Foreground="Black"
+                                BorderThickness="0.1"
+                                Background="WhiteSmoke"
+                                ToolTip="Open Folder"
+                                Command="{Binding BtntOpenDataFolder}" />
+                    </StackPanel>
+                </Grid>
+
+                <!--Date-->
+                <Label Content="From Date"
+                       Grid.Row="1"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center" />
+                <DatePicker  Grid.Row="1"
+                             Grid.Column="1"
+                             SelectedDate="{Binding SelectedStartDate}" />
+
+                <Label Content="To Date "
+                       Grid.Row="1"
+                       Grid.Column="2"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center" />
+                <DatePicker   Grid.Row="1"
+                              Grid.Column="3"
+                              SelectedDate="{Binding SelectedToDate}" />
+
+
+                <!--Symbols-->
+                <Label Content="Symbol"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center"
+                       Grid.Row="2" />
+                <TextBox Text="{Binding SymbolSelected, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="False"
+                         Grid.Row="2"
+                         Grid.Column="1"
+                         Padding="0"
+                         Width="150"
+                         HorizontalAlignment="Left"
+                         Height="15" />
+
+                <!--Intervals-->
+                <Label Content="Interval"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center"
+                       Grid.Row="2"
+                       Grid.Column="2" />
+                <ComboBox  Grid.Column="3"
+                           Grid.Row="2"
+                           IsEnabled="False"
+                           ItemsSource="{Binding Intervals, UpdateSourceTrigger=PropertyChanged}"
+                           SelectedItem="{Binding SelectedInterval, UpdateSourceTrigger=PropertyChanged}"
+                           IsReadOnly="True"
+                           Padding="0"
+                           HorizontalAlignment="Left"
+                           Width="150"
+                           Height="15" />
+
+                <!--Market-->
+                <Label Content="Market"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center"
+                       Grid.Row="3" />
+                <ComboBox  Grid.Column="1"
+                           Grid.Row="3"
+                           ItemsSource="{Binding MarketTypes, UpdateSourceTrigger=PropertyChanged}"
+                           SelectedItem="{Binding SelectedMarketType, UpdateSourceTrigger=PropertyChanged}"
+                           IsReadOnly="True"
+                           IsEnabled="False"
+                           Padding="0"
+                           HorizontalAlignment="Left"
+                           Width="150"
+                           Height="15" />
+
+                <!--Exchanges-->
+                <Label Content="Exchange"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 8 0"
+                       VerticalContentAlignment="Center"
+                       Grid.Row="3"
+                       Grid.Column="2" />
+                <ComboBox  Grid.Column="3"
+                           Grid.Row="3"
+                           ItemsSource="{Binding Exchanges, UpdateSourceTrigger=PropertyChanged}"
+                           SelectedItem="{Binding SelectedExchange, UpdateSourceTrigger=PropertyChanged}"
+                           IsReadOnly="True"
+                           IsEnabled="False"
+                           Padding="0"
+                           HorizontalAlignment="Left"
+                           Width="150"
+                           Height="15" />
+
+                <!--Download-->
+                <Button Grid.Row="4"
+                        Grid.ColumnSpan="10"
+                        Margin="8"
+                        Command="{Binding BtnDownloadKlines}"
+                        Style="{StaticResource MaterialDesignFloatingActionButton}"
+                        Background="#EE9322"
+                        Foreground="Yellow"
+                        BorderBrush="#EE9322"
+                        materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsRunDownloadKlines}"
+                        materialDesign:ButtonProgressAssist.Value="-1"
+                        materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                        Content="{materialDesign:PackIcon Kind=Run}" />
+
+
+                <!--Status-->
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="5"
+                            Grid.ColumnSpan="10"
+                            Margin="2">
+                    <TextBlock Text="Status: " />
+                    <TextBlock Text="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
+                               FontWeight="Bold" />
+                </StackPanel>
+            </Grid>
+        </TabItem>
+
+
+        <!--ExportData-->
+        <TabItem Width="80"
+                 Height="80">
+            <TabItem.Header>
+                <StackPanel Width="auto"
+                            Height="auto"
+                            Margin="0 0 0 10">
+                    <materialDesign:PackIcon Width="32"
+                                             Height="32"
+                                             HorizontalAlignment="Center"
+                                             Kind="DatabaseExportOutline" />
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="12"
+                               FontWeight="Normal"
+                               Text="Export" />
+                </StackPanel>
+            </TabItem.Header>
+            <Grid Margin="4">
+
+            </Grid>
+        </TabItem>
+
+
+
+        <!--TrainingModel-->
+        <TabItem Width="80"
+                 Height="80">
+            <TabItem.Header>
+                <StackPanel Width="auto"
+                            Height="auto"
+                            Margin="0 0 0 10">
+                    <materialDesign:PackIcon Width="32"
+                                             Height="32"
+                                             HorizontalAlignment="Center"
+                                             Kind="Strategy" />
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="12"
+                               FontWeight="Normal"
+                               Text="Training" />
+                </StackPanel>
+            </TabItem.Header>
+            <Grid Margin="4">
+
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>
