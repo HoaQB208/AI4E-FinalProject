@@ -32,12 +32,14 @@ public enum Interval
 
 public enum AIAlgorithm
 {
-    RandomForest,
-    Auto,
+    AutoML,
+    FastForest,
+    LightGBM
 }
 
 
 public enum ModelType
 {
     Regression,
+    Classification
 }

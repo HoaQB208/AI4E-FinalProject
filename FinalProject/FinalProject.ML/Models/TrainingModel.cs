@@ -17,37 +17,59 @@ namespace FinalProject.ML.Models
                 if (vm.IsRunTraining)
                 {
                     vm.TrainingStatus = "Starting Training Model...";
+                    startTime = DateTime.Now;
+                    UpdateStatus(vm);
 
                     string fileName = Path.GetFileNameWithoutExtension(vm.DataSetPath);
                     fileName = fileName.Replace("DataSet_", $"Model_{vm.SelectedAlgorithm}_");
                     string folder = Path.GetDirectoryName(vm.DataSetPath)!;
-                    string modelPath = Path.Combine(folder, $"{fileName}.zip");
+                    string modelPath = Path.Combine(folder, fileName);
 
                     await Task.Run(() =>
                     {
                         MLContext context = new();
-
                         IDataView alldata = LoadData(vm.DataSetPath);
                         if (alldata != null)
                         {
+                            TrainTestData splitDataView = context.Data.TrainTestSplit(alldata, testFraction: 0.2);  // 80% for Train, 20% for Test
                             if (vm.SelectedModelType == ModelType.Regression)
                             {
-                                TrainTestData splitDataView = context.Data.TrainTestSplit(alldata, testFraction: 0.2);  // Tách dữ liệu thành 2 phần: 80% cho train và 20% cho test
                                 var experiment = context.Auto().CreateRegressionExperiment(maxExperimentTimeInSeconds: vm.MaxTime);
                                 var experimentResult = experiment.Execute(splitDataView.TrainSet, splitDataView.TestSet, progressHandler: new RegressionProgressHandler(vm));
                                 var bestRun = experimentResult.BestRun;
                                 string valid = $"RMSE={bestRun.ValidationMetrics.RootMeanSquaredError:0.00}";
-                                vm.TrainingStatus = $"{valid}, LossFunction={bestRun.ValidationMetrics.LossFunction:0.00}, Trainer={TrainingUtils.GetTrainerName(bestRun.TrainerName)}";
+                                vm.TrainingStatus = $"Completed: {valid}, LossFunction={bestRun.ValidationMetrics.LossFunction:0.00}, Trainer={TrainingUtils.GetTrainerName(bestRun.TrainerName)}";
                                 modelPath = $"{modelPath}_{valid}.zip";
                                 context.Model.Save(bestRun.Model, splitDataView.TrainSet.Schema, modelPath);
                             }
+                            else // Classification
+                            {
+
+
+                            }
                         }
                     });
-
-                    vm.TrainingStatus = "Completed";
                 }
             }
             else vm.TrainingStatus = "DataSet Not Found";
+        }
+
+        static DateTime startTime;
+        private static void UpdateStatus(MainViewModel vm)
+        {
+            Task.Run(() =>
+            {
+                do
+                {
+                    var totalSeconds = (DateTime.Now - startTime).TotalSeconds;
+                    var per = vm.MaxTime > 0 ? 100 * totalSeconds / vm.MaxTime : 0;
+                    per = Math.Min(per, 100);
+                    vm.ProgressBarStatus = $"Progress: {per:0.0}%";
+                    vm.ProgressBarValue = 100 * totalSeconds / vm.MaxTime;
+                    Thread.Sleep(1000);
+                }
+                while (vm.IsRunTraining);
+            });
         }
 
         private static IDataView LoadData(string dataSetPath)

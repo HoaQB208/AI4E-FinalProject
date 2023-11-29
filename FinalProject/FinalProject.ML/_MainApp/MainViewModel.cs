@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace FinalProject.ML._MainApp
@@ -215,7 +216,7 @@ namespace FinalProject.ML._MainApp
 
 
         public ObservableCollection<AIAlgorithm> Algorithms { get; } = new ObservableCollection<AIAlgorithm>(Enum.GetValues(typeof(AIAlgorithm)).Cast<AIAlgorithm>());
-        public AIAlgorithm SelectedAlgorithm { get; set; } = AIAlgorithm.RandomForest;
+        public AIAlgorithm SelectedAlgorithm { get; set; } = AIAlgorithm.AutoML;
 
         public ObservableCollection<ModelType> ModelTypes { get; } = new ObservableCollection<ModelType>(Enum.GetValues(typeof(ModelType)).Cast<ModelType>());
         public ModelType SelectedModelType { get; set; } = ModelType.Regression;
@@ -242,6 +243,28 @@ namespace FinalProject.ML._MainApp
                 OnPropertyChanged(nameof(IsRunTraining));
             }
         }
+
+        private string _ProgressBarStatus = "Progress";
+        public string ProgressBarStatus
+        {
+            get { return _ProgressBarStatus; }
+            set
+            {
+                _ProgressBarStatus = value;
+                OnPropertyChanged(nameof(ProgressBarStatus));
+            }
+        }
+        private double _ProgressBarValue;
+        public double ProgressBarValue
+        {
+            get { return _ProgressBarValue; }
+            set
+            {
+                _ProgressBarValue = value;
+                OnPropertyChanged(nameof(ProgressBarValue));
+            }
+        }
+
 
         private string _TrainingStatus;
         public string TrainingStatus
