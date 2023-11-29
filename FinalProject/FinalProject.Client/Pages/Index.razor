@@ -4,23 +4,27 @@
 @using Newtonsoft.Json
 <PageTitle>ThaiHoaPham - FinalProject - AI4E</PageTitle>
 
-<div>
-    <label for="stockCode">Symbol</label>
-    <input id="stockCode" @bind="stockCode" />
-    <button @onclick="Predict">Predict</button>
+
+<div style="background-image: url('/Background.jpg'); background-size: cover; background-repeat: no-repeat; height: 100vh; display: flex;">
+    <div>
+        <label for="symbol">Symbol</label>
+        <input id="symbol" @bind="symbol" />
+        <button @onclick="Predict">Predict</button>
+    </div>
+
+    <div>
+        @result
+    </div>
 </div>
 
-<div>
-    @result
-</div>
 
 @code {
-    private string stockCode = "BTCUSDT";
+    private string symbol = "BTCUSDT";
     private string result = "";
 
     private async void Predict()
     {
-        var klines = await Market.Download(stockCode, Interval.H1, null, limit: 30);
+        var klines = await Market.Download(symbol, Interval.H1, null, limit: 30);
         if (klines.Count > 12)
         {
             klines.Remove(klines.Last());
@@ -50,13 +54,18 @@
                 if (pre != null)
                 {
                     var last = klines.Last();
-                    decimal closePrice = last.C * (1 + (decimal)pre.Score);
+                    decimal openPrice = last.C;
+                    decimal closePrice = openPrice * (1 + (decimal)pre.Score / 100);
 
                     string klineColor = pre.Score >= 0 ? "Green" : "Red";
-                    result = $"Close Price: {closePrice:0.00000000}\nColor: {klineColor}";
-                    StateHasChanged();
+                    result = $"Open Price: {openPrice}. Close Price: {closePrice:0.00000000}\nColor: {klineColor}";
                 }
+                else result = "No data received from Server!";
             }
+            else result = "No data received from Server!";
         }
+        else result = "Downloading Klines data failed!";
+
+        StateHasChanged();
     }
 }
