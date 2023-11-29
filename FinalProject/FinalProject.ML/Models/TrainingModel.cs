@@ -1,4 +1,5 @@
-﻿using FinalProject.ML._MainApp;
+﻿using FinalProject.Core._Class;
+using FinalProject.ML._MainApp;
 using Microsoft.ML;
 using Microsoft.ML.AutoML;
 using Microsoft.ML.Data;
@@ -74,7 +75,7 @@ namespace FinalProject.ML.Models
 
         private static IDataView LoadData(string dataSetPath)
         {
-            return new MLContext().Data.LoadFromTextFile<Node>(dataSetPath);
+            return new MLContext().Data.LoadFromTextFile<DataRow>(dataSetPath);
         }
     }
 
@@ -97,23 +98,5 @@ namespace FinalProject.ML.Models
             }
             _vm.TrainingStatus = $"Best: {bestResult:0.00}. Current: RMSE={iterationResult.ValidationMetrics.RootMeanSquaredError:0.00}, LossFunction={iterationResult.ValidationMetrics.LossFunction:0.00}, Loop={_iterationIndex}, TrainerName={TrainingUtils.GetTrainerName(iterationResult.TrainerName)}";
         }
-    }
-
-
-    public class Node
-    {
-        [LoadColumn(0)] public float C0;
-        [LoadColumn(1)] public float C1;
-        [LoadColumn(2)] public float C2;
-        [LoadColumn(3)] public float C3;
-        [LoadColumn(4)] public float C4;
-        [LoadColumn(5)] public float C5;
-        [LoadColumn(6)] public float C6;
-        [LoadColumn(7)] public float C7;
-        [LoadColumn(8)] public float C8;
-        [LoadColumn(9)] public float C9;
-        [LoadColumn(10)] public float C10;
-        [LoadColumn(11)] public float C11;
-        [LoadColumn(12)] public float Label;
     }
 }
