@@ -4,26 +4,35 @@
 @using FinalProject.Core.Data
 @using FinalProject.Core._Class
 @using Newtonsoft.Json
+@using System.Diagnostics.CodeAnalysis
 
 <PageTitle>ThaiHoaPham - FinalProject - AI4E</PageTitle>
 
 
 <div class="d-flex flex-column m-0 p-0" style="background-image: url('/Background.jpg'); background-size: cover; background-repeat: no-repeat; height: 100vh;">
 
-    <div class="d-flex m-4" style="justify-content: center; align-items:center">
+    <div class="d-flex m-4" style="height:32px; justify-content: center; align-items:center">
         <label style="color:white;" for="symbol">Symbol</label>
         <input id="symbol" @bind-value="symbol" @bind-value:event="oninput" style="width:150px; margin:8px" />
         <button class="btn btn-warning" @onclick="Predict">Predict</button>
     </div>
 
-    <div class="d-flex flex-column m-2" style="justify-content: center; align-items: center;">
-        <label style="color:white;">Open Price: @openPrice</label>
-        <label style="color:white;">Close Price: @closePrice</label>
-        <label style="color:white;">Kline Color: </label>
+    <div class="d-flex flex-column m-2" style="height:68px; justify-content: center; align-items: center;">
+        @if (isLoading)
+        {
+            <div class="loader"></div>
+        }
+        else
+        {
+            <label style="color:white;">@openPrice</label>
+            <label style="color:white;">@closePrice</label>
+            <label style="color:white;">@summary</label>
+        }
     </div>
 
     <div class="flex-fill">
         <ApexChart @ref=chart
+                   Options="chartOptions"
                    Height='"100%"'
                    Width='"96%"'
                    TItem="TKline"
@@ -50,15 +59,26 @@
 
 @code {
     private string symbol = "BTCUSDT";
-    private decimal openPrice = 0;
-    private decimal closePrice = 0;
+    private string openPrice = "";
+    private string closePrice = "";
+    private string summary = "";
+    [AllowNull]
     ApexChart<TKline> chart;
+    private bool isLoading = false;
 
+    private ApexChartOptions<TKline> chartOptions = new ApexChartOptions<TKline>()
+        {
+            Xaxis = new XAxis() { Labels = new XAxisLabels() { Style = new AxisLabelStyle() { Colors = "white" } } },
+            Yaxis = new List<YAxis>() { new YAxis() { Labels = new YAxisLabels() { Style = new AxisLabelStyle() { Colors = "white" } } } }
+        };
 
     private async Task Predict()
     {
+        isLoading = true;
         try
         {
+            await ClearData();
+
             var klines = await Market.Download(symbol, Interval.H1, null, limit: 100);
             if (klines.Count > 12)
             {
@@ -90,14 +110,20 @@
                     if (pre != null)
                     {
                         var last = klines.Last();
-                        openPrice = last.C;
-                        closePrice = openPrice * (1 + (decimal)pre.Score / 100);
+                        decimal open = last.C;
+                        decimal close = open * (1 + (decimal)pre.Score / 100);
+                        int decimalPlaces = BitConverter.GetBytes(decimal.GetBits(open)[3])[2];
+                        close = Math.Round(close, decimalPlaces);
 
-                        //string klineColor = pre.Score >= 0 ? "Green" : "Red";
+                        openPrice = $"Open Price: {open}$";
+                        closePrice = $"Close Price: {close}$";
+
+                        string klineColor = pre.Score >= 0 ? "🟩" : "🟥";
+                        summary = $"Kline Color: {klineColor} ({Math.Round(pre.Score, 3)}%)";
                     }
-                    //else result = "No data received from Server!";
+                    else summary = "No data received from Server!";
                 }
-                //else result = "No data received from Server!";
+                else summary = "No data received from Server!";
 
 
                 if (chart != null)
@@ -109,12 +135,27 @@
                     await chart.RenderAsync();
                 }
             }
-            //else result = "Downloading Klines data failed!";
+            else summary = "Downloading Klines data failed!";
         }
         catch (Exception ex)
         {
-            //result = $"Error: {ex.Message}";
+            summary = $"Error: {ex.Message}";
         }
+
+        isLoading = false;
         StateHasChanged();
+    }
+
+    private async Task ClearData()
+    {
+        openPrice = "";
+        closePrice = "";
+        summary = "";
+        if (chart != null)
+        {
+            chart.Series[0].Items = new List<TKline>();
+            await chart.UpdateSeriesAsync(true);
+            await chart.RenderAsync();
+        }
     }
 }

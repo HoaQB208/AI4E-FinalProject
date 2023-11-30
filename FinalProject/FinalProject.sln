@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinalProject.Server", "Fina
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinalProject.Client", "FinalProject.Client\FinalProject.Client.csproj", "{3D79084D-076E-470C-B399-845907DE4D4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinalProject.ML", "FinalProject.ML\FinalProject.ML.csproj", "{A904E5BE-5A2B-4F61-8A8F-BC3E5400F90C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinalProject.ML", "FinalProject.ML\FinalProject.ML.csproj", "{A904E5BE-5A2B-4F61-8A8F-BC3E5400F90C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
