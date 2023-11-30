@@ -1,71 +1,120 @@
 ﻿@page "/"
+@using ApexCharts
+@using FinalProject.Client.Models
 @using FinalProject.Core.Data
 @using FinalProject.Core._Class
 @using Newtonsoft.Json
+
 <PageTitle>ThaiHoaPham - FinalProject - AI4E</PageTitle>
 
 
-<div style="background-image: url('/Background.jpg'); background-size: cover; background-repeat: no-repeat; height: 100vh; display: flex;">
-    <div>
-        <label for="symbol">Symbol</label>
-        <input id="symbol" @bind="symbol" />
-        <button @onclick="Predict">Predict</button>
+<div class="d-flex flex-column m-0 p-0" style="background-image: url('/Background.jpg'); background-size: cover; background-repeat: no-repeat; height: 100vh;">
+
+    <div class="d-flex m-4" style="justify-content: center; align-items:center">
+        <label style="color:white;" for="symbol">Symbol</label>
+        <input id="symbol" @bind-value="symbol" @bind-value:event="oninput" style="width:150px; margin:8px" />
+        <button class="btn btn-warning" @onclick="Predict">Predict</button>
     </div>
 
-    <div>
-        @result
+    <div class="d-flex flex-column m-2" style="justify-content: center; align-items: center;">
+        <label style="color:white;">Open Price: @openPrice</label>
+        <label style="color:white;">Close Price: @closePrice</label>
+        <label style="color:white;">Kline Color: </label>
     </div>
+
+    <div class="flex-fill">
+        <ApexChart @ref=chart
+                   Height='"100%"'
+                   Width='"96%"'
+                   TItem="TKline"
+                   XAxisType="XAxisType.Datetime">
+            <ApexCandleSeries TItem="TKline"
+                              Name="Apex Price"
+                              XValue="@(e => e.D)"
+                              Open="@(e => e.O)"
+                              High="@(e => e.H)"
+                              Low="@(e => e.L)"
+                              Close="@(e => e.C)"
+                              OrderByDescending="e => e.X" />
+        </ApexChart>
+    </div>
+
+    <div class="d-flex m-2" style="justify-content: center; align-items:center">
+        <a href="https://www.facebook.com/HoaQB208/" target="_blank">
+            <label style="text-decoration: underline; color: white; cursor: pointer; display: inline-block;">AI4E - FinalProject - Thai Hoa Pham</label>
+        </a>
+    </div>
+
 </div>
 
 
 @code {
     private string symbol = "BTCUSDT";
-    private string result = "";
+    private decimal openPrice = 0;
+    private decimal closePrice = 0;
+    ApexChart<TKline> chart;
 
-    private async void Predict()
+
+    private async Task Predict()
     {
-        var klines = await Market.Download(symbol, Interval.H1, null, limit: 30);
-        if (klines.Count > 12)
+        try
         {
-            klines.Remove(klines.Last());
-
-            List<float> pers = klines.Select(kline => (float)PriceUtils.Percent(kline.O, kline.C, 1)).ToList();
-            DataRow dataRow = new()
-                {
-                    C0 = pers[^12],
-                    C1 = pers[^11],
-                    C2 = pers[^10],
-                    C3 = pers[^9],
-                    C4 = pers[^8],
-                    C5 = pers[^7],
-                    C6 = pers[^6],
-                    C7 = pers[^5],
-                    C8 = pers[^4],
-                    C9 = pers[^3],
-                    C10 = pers[^2],
-                    C11 = pers[^1]
-                };
-            string data = JsonConvert.SerializeObject(dataRow);
-            string url = "https://ai4e-server.azurewebsites.net/api/pre/" + data;
-            string resultStr = await new HttpClient().GetStringAsync(url);
-            if (!string.IsNullOrEmpty(resultStr))
+            var klines = await Market.Download(symbol, Interval.H1, null, limit: 100);
+            if (klines.Count > 12)
             {
-                Prediction? pre = JsonConvert.DeserializeObject<Prediction>(resultStr);
-                if (pre != null)
+                klines.Remove(klines.Last());
+
+
+                List<float> pers = klines.Select(kline => (float)PriceUtils.Percent(kline.O, kline.C, 1)).ToList();
+                DataRow dataRow = new()
+                    {
+                        C0 = pers[^12],
+                        C1 = pers[^11],
+                        C2 = pers[^10],
+                        C3 = pers[^9],
+                        C4 = pers[^8],
+                        C5 = pers[^7],
+                        C6 = pers[^6],
+                        C7 = pers[^5],
+                        C8 = pers[^4],
+                        C9 = pers[^3],
+                        C10 = pers[^2],
+                        C11 = pers[^1]
+                    };
+                string data = JsonConvert.SerializeObject(dataRow);
+                string url = "https://ai4e-server.azurewebsites.net/api/pre/" + data;
+                string resultStr = await new HttpClient().GetStringAsync(url);
+                if (!string.IsNullOrEmpty(resultStr))
                 {
-                    var last = klines.Last();
-                    decimal openPrice = last.C;
-                    decimal closePrice = openPrice * (1 + (decimal)pre.Score / 100);
+                    Prediction? pre = JsonConvert.DeserializeObject<Prediction>(resultStr);
+                    if (pre != null)
+                    {
+                        var last = klines.Last();
+                        openPrice = last.C;
+                        closePrice = openPrice * (1 + (decimal)pre.Score / 100);
 
-                    string klineColor = pre.Score >= 0 ? "Green" : "Red";
-                    result = $"Open Price: {openPrice}. Close Price: {closePrice:0.00000000}\nColor: {klineColor}";
+                        //string klineColor = pre.Score >= 0 ? "Green" : "Red";
+                    }
+                    //else result = "No data received from Server!";
                 }
-                else result = "No data received from Server!";
-            }
-            else result = "No data received from Server!";
-        }
-        else result = "Downloading Klines data failed!";
+                //else result = "No data received from Server!";
 
+
+                if (chart != null)
+                {
+                    foreach (var item in klines) item.D = item.D.AddHours(7);
+
+                    chart.Series[0].Items = klines;
+                    await chart.UpdateSeriesAsync(true);
+                    await chart.RenderAsync();
+                }
+            }
+            //else result = "Downloading Klines data failed!";
+        }
+        catch (Exception ex)
+        {
+            //result = $"Error: {ex.Message}";
+        }
         StateHasChanged();
     }
 }
