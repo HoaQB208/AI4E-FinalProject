@@ -4,12 +4,12 @@
 **Demo:** [https://ai4e-hoapham.azurewebsites.net/](https://ai4e-hoapham.azurewebsites.net/)  
 
 
-# 💡 Solution
-![image](https://github.com/HoaQB208/AI4E-FinalProject/assets/32737501/45802994-a650-46e1-9123-242ff51c73ae)
+# 💡 Solution  
+
+![Solution](https://github.com/HoaQB208/AI4E-FinalProject/assets/32737501/425f09a6-4bee-4b6a-8ab6-9725b14db3a9)
 
 
-
-# 🗂 DataSet
+# 🗂 DataSet  
 **Download trading data:**  
 Download trading data on exchanges like Binance. The received data includes OpenTime, O-H-L-C prices, Volume.  
 ![image](https://github.com/HoaQB208/AI4E-FinalProject/assets/32737501/bc556810-0eca-49ea-b7ab-87579d33aae6)
@@ -19,9 +19,11 @@ Download trading data on exchanges like Binance. The received data includes Open
 **Extract features:**  
 - Calculate the percentage of closing price compared to opening price of each candle (Negative number when closing price is lower than opening price and vice versa).  
 - Create features and labels. With 12 percent being features, the next percent is Label.
-- Save to json file.  
-
-![image](https://github.com/HoaQB208/AI4E-FinalProject/assets/32737501/08ab6d9c-994c-4f60-a6ab-a270512f2322)
+  
+![DataSet](https://github.com/HoaQB208/AI4E-FinalProject/assets/32737501/165e4782-600d-4f6d-aa1d-96a54674b9b6)  
+- Save to json file.
+  
+![image](https://github.com/HoaQB208/AI4E-FinalProject/assets/32737501/08ab6d9c-994c-4f60-a6ab-a270512f2322)  
 
 
 
@@ -38,8 +40,9 @@ Solution use **ML.NET** library.
 
 
 
-# ⛳️ Using
+# ⛳️ Using  
 Closing price prediction for:  
-**Futures** market on **Binance**
-Time frame: **H1**
-**URL:** [https://ai4e-hoapham.azurewebsites.net/](https://ai4e-hoapham.azurewebsites.net/)  
++ Market: **Futures**  
++ Exchanges: **Binance**  
++ Time frame: **H1**  
++ URL: **[https://ai4e-hoapham.azurewebsites.net/](https://ai4e-hoapham.azurewebsites.net/)**  
