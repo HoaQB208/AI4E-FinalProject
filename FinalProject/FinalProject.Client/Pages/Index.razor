@@ -82,10 +82,10 @@
             var klines = await Market.Download(symbol, Interval.H1, null, limit: 100);
             if (klines.Count > 12)
             {
-                klines.Remove(klines.Last());
-
+                foreach (var item in klines) item.D = item.D.AddHours(7);
 
                 List<float> pers = klines.Select(kline => (float)PriceUtils.Percent(kline.O, kline.C, 1)).ToList();
+                pers.Remove(pers.Last());
                 DataRow dataRow = new()
                     {
                         C0 = pers[^12],
@@ -128,8 +128,6 @@
 
                 if (chart != null)
                 {
-                    foreach (var item in klines) item.D = item.D.AddHours(7);
-
                     chart.Series[0].Items = klines;
                     await chart.UpdateSeriesAsync(true);
                     await chart.RenderAsync();

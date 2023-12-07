@@ -39,7 +39,7 @@ namespace FinalProject.ML.Models
                                 var experimentResult = experiment.Execute(splitDataView.TrainSet, splitDataView.TestSet, progressHandler: new RegressionProgressHandler(vm));
                                 var bestRun = experimentResult.BestRun;
                                 string valid = $"RMSE={bestRun.ValidationMetrics.RootMeanSquaredError:0.00}";
-                                vm.TrainingStatus = $"Completed: {valid}, LossFunction={bestRun.ValidationMetrics.LossFunction:0.00}, Trainer={TrainingUtils.GetTrainerName(bestRun.TrainerName)}";
+                                vm.TrainingStatus = $"Completed: {valid}, Trainer={TrainingUtils.GetTrainerName(bestRun.TrainerName)}";
                                 modelPath = $"{modelPath}_{valid}.zip";
                                 context.Model.Save(bestRun.Model, splitDataView.TrainSet.Schema, modelPath);
                             }
@@ -50,6 +50,8 @@ namespace FinalProject.ML.Models
                             }
                         }
                     });
+
+                    vm.IsRunTraining = false;
                 }
             }
             else vm.TrainingStatus = "DataSet Not Found";
@@ -96,7 +98,7 @@ namespace FinalProject.ML.Models
             {
                 bestResult = iterationResult.ValidationMetrics.RootMeanSquaredError;
             }
-            _vm.TrainingStatus = $"Best: {bestResult:0.00}. Current: RMSE={iterationResult.ValidationMetrics.RootMeanSquaredError:0.00}, LossFunction={iterationResult.ValidationMetrics.LossFunction:0.00}, Loop={_iterationIndex}, TrainerName={TrainingUtils.GetTrainerName(iterationResult.TrainerName)}";
+            _vm.TrainingStatus = $"Best RMSE: {bestResult:0.00}. Current: RMSE={iterationResult.ValidationMetrics.RootMeanSquaredError:0.00}, Loop={_iterationIndex}, TrainerName={TrainingUtils.GetTrainerName(iterationResult.TrainerName)}";
         }
     }
 }
